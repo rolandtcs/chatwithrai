@@ -6,12 +6,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // ✅ Function to start conversation with language selection
     async function initiateConversation() {
-        const initialMessage = `Hello! I'm RAI! How can I assist you today?<br>
-        To change language at any time, just type:<br>
-        1️⃣ English<br>
-        2️⃣ 中文<br>
-        3️⃣ Melayu<br>
-        4️⃣ தமிழ்`;
+        const initialMessage = "Hello! I'm RAI! How can I assist you today?\n" +
+        "To change language at any time, just type:\n" +
+        "1️⃣ English\n2️⃣ 中文\n3️⃣ Melayu\n4️⃣ தமிழ்";
 
         addMessage("RAI", initialMessage, "ai");
         chatBox.scrollTop = chatBox.scrollHeight;
