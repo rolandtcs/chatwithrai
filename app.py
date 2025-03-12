@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 # Chatbot function
 def chatbot_response(user_message):
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model="gpt-4",
         messages=[
             {"role": "system", "content": "You are a helpful AI chatbot that assists with online payments, bookings, and account access."},
