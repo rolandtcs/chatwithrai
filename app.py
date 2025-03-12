@@ -1,22 +1,19 @@
 import openai
 import os
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="static", template_folder="templates")
 
 client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-@app.route("/", methods=["GET"])
+@app.route("/")
 def home():
-    return "Chatbot is running!"
+    return render_template("index.html")  # ✅ Serve the chatbot UI
 
 @app.route("/chat", methods=["POST"])
 def chat():
     try:
-        # ✅ Force Flask to parse JSON correctly
         data = request.get_json(force=True, silent=True)
-
-        # ✅ Debugging: Print incoming data
         print("Received data:", data)
 
         if not data or "message" not in data:
@@ -35,3 +32,6 @@ def chat():
     except Exception as e:
         print("Error:", e)
         return jsonify({"reply": "An error occurred processing your request."}), 500
+
+if __name__ == "__main__":
+    app.run(debug=True)
