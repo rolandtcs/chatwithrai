@@ -20,7 +20,7 @@ def chatbot_response(user_message):
             {"role": "user", "content": user_message}
         ]
     )
-    return response.choices[0].message["content"]  # Extract response text
+    return response.choices[0].message.content  # Extract response text
 
 # Web route for chatbot page
 @app.route("/")
