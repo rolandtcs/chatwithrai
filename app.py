@@ -8,6 +8,9 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 # Initialize Flask app
 app = Flask(__name__)
 
+# Define OpenAI client properly
+client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
 # Chatbot function
 def chatbot_response(user_message):
     response = client.chat.completions.create(
