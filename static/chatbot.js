@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const initialMessage =
             "Hello! I'm RAI! How can I assist you today?\n" +
             "To change language at any time, enter:\n" +
-            "1️⃣ English\n2️⃣ 中文\n3️⃣ Melayu\n4️⃣ தமிழ் (Optional, English is default)";
+            "1️⃣ English\n2️⃣ 中文\n3️⃣ Melayu\n4️⃣ தமிழ்";
         addMessage("RAI", initialMessage, "ai");
         chatBox.scrollTop = chatBox.scrollHeight;
     }
