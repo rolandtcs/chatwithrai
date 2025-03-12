@@ -2,14 +2,14 @@ document.addEventListener("DOMContentLoaded", function () {
     const chatBox = document.getElementById("chat-box");
     const userInput = document.getElementById("user-input");
     const sendButton = document.getElementById("send");
-    let userLanguage = "English"; // ✅ Default language is English
+    let userLanguage = "English"; // Default language
 
     // ✅ Function to start conversation with language selection
     async function initiateConversation() {
-        const initialMessage = "Hello! I'm RAI! How can I assist you today?\n" +
-        "To change language at any time, just type:\n" +
+        const initialMessage =
+        "Hello! I'm RAI! How can I assist you today?\n" +
+        "To change language, please enter:\n" +
         "1️⃣ English\n2️⃣ 中文\n3️⃣ Melayu\n4️⃣ தமிழ்";
-
         addMessage("RAI", initialMessage, "ai");
         chatBox.scrollTop = chatBox.scrollHeight;
     }
@@ -19,37 +19,53 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!userMessage) return;
 
         addMessage("You", userMessage, "user");
-        userInput.value = ''; // ✅ Clear input field
+        userInput.value = ''; // Clear input field
         chatBox.scrollTop = chatBox.scrollHeight;
 
-        // ✅ Detect if the user wants to change language
-        if (["1", "English", "english"].includes(userMessage.trim())) {
-            userLanguage = "English";
-            addMessage("RAI", "✅ Language changed to English. How can I assist you?", "ai");
-            return;
-        } else if (["2", "中文", "chinese", "mandarin"].includes(userMessage.trim())) {
-            userLanguage = "Chinese";
-            addMessage("RAI", "✅ 语言已更改为中文。请问有什么需要帮助？", "ai");
-            return;
-        } else if (["3", "Melayu", "malay"].includes(userMessage.trim())) {
-            userLanguage = "Malay";
-            addMessage("RAI", "✅ Bahasa telah ditukar ke Melayu. Bagaimana saya boleh membantu anda?", "ai");
-            return;
-        } else if (["4", "தமிழ்", "tamil"].includes(userMessage.trim())) {
-            userLanguage = "Tamil";
-            addMessage("RAI", "✅ மொழி தமிழ் ஆக மாற்றப்பட்டுள்ளது. எப்படி உதவலாம்?", "ai");
-            return;
+        // ✅ Show Typing Bubble
+        const typingBubble = addTypingBubble();
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        // ✅ Detect language choice
+        if (!userLanguage || userLanguage === "English") {
+            if (["1", "English", "english"].includes(userMessage.trim())) {
+                userLanguage = "English";
+                removeTypingBubble(typingBubble);
+                addMessage("RAI", "Great! I'll assist you in English. How may I help you?", "ai");
+                return;
+            } else if (["2", "中文", "chinese", "mandarin"].includes(userMessage.trim())) {
+                userLanguage = "Chinese";
+                removeTypingBubble(typingBubble);
+                addMessage("RAI", "很好！我会用中文帮助您。请问有什么需要？", "ai");
+                return;
+            } else if (["3", "Melayu", "malay"].includes(userMessage.trim())) {
+                userLanguage = "Malay";
+                removeTypingBubble(typingBubble);
+                addMessage("RAI", "Bagus! Saya akan membantu anda dalam bahasa Melayu. Apa yang boleh saya bantu?", "ai");
+                return;
+            } else if (["4", "தமிழ்", "tamil"].includes(userMessage.trim())) {
+                userLanguage = "Tamil";
+                removeTypingBubble(typingBubble);
+                addMessage("RAI", "நன்று! நான் தமிழ் மூலம் உங்களை உதவுவேன். எப்படி உதவலாம்?", "ai");
+                return;
+            } else {
+                removeTypingBubble(typingBubble);
+                addMessage("RAI", "❌ Please select a valid option: 1️⃣ English, 2️⃣ 中文, 3️⃣ Melayu, 4️⃣ தமிழ்", "ai");
+                return;
+            }
         }
 
         try {
             const response = await fetch('/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: userMessage, language: userLanguage }) // ✅ Send selected language
+                body: JSON.stringify({ message: userMessage, language: userLanguage }) // ✅ Send language preference to backend
             });
 
             const data = await response.json();
             console.log("Received response from API:", data);
+
+            removeTypingBubble(typingBubble); // ✅ Remove typing bubble when response is ready
 
             if (data.reply) {
                 addMessage("RAI", data.reply, "ai");
@@ -59,6 +75,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         } catch (error) {
             console.error("Error sending message:", error);
+            removeTypingBubble(typingBubble);
             addMessage("RAI", "Sorry, something went wrong!", "ai");
         }
     }
@@ -69,6 +86,26 @@ document.addEventListener("DOMContentLoaded", function () {
         messageDiv.innerHTML = `<strong>${sender}:</strong><br>${text.replace(/\n/g, '<br>')}`;
         chatBox.appendChild(messageDiv);
         chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // ✅ Function to Show Typing Bubble (WhatsApp Style)
+    function addTypingBubble() {
+        const typingDiv = document.createElement("div");
+        typingDiv.classList.add("message", "typing-bubble");
+        typingDiv.innerHTML = `<span class="typing-dots">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+        </span>`;
+        chatBox.appendChild(typingDiv);
+        return typingDiv;
+    }
+
+    // ✅ Function to Remove Typing Bubble
+    function removeTypingBubble(typingDiv) {
+        if (typingDiv && typingDiv.parentNode) {
+            typingDiv.parentNode.removeChild(typingDiv);
+        }
     }
 
     userInput.addEventListener("keydown", function (event) {
