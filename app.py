@@ -4,18 +4,25 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-# ✅ Define OpenAI client properly
 client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+@app.route("/", methods=["GET"])
+def home():
+    return "Chatbot is running!"
 
 @app.route("/chat", methods=["POST"])
 def chat():
-    data = request.get_json()
-    user_message = data.get("message", "")
-
-    if not user_message:
-        return jsonify({"reply": "Please type a message."})
-
     try:
+        # ✅ Force Flask to parse JSON correctly
+        data = request.get_json(force=True, silent=True)
+
+        # ✅ Debugging: Print incoming data
+        print("Received data:", data)
+
+        if not data or "message" not in data:
+            return jsonify({"reply": "Invalid request. Please send a JSON message."}), 400
+        
+        user_message = data["message"]
         response = client.chat.completions.create(
             model="gpt-4",
             messages=[
@@ -24,9 +31,7 @@ def chat():
             ]
         )
         return jsonify({"reply": response.choices[0].message.content})
+
     except Exception as e:
         print("Error:", e)
-        return jsonify({"reply": "Sorry, there was an error processing your request."})
-
-if __name__ == "__main__":
-    app.run(debug=True)
+        return jsonify({"reply": "An error occurred processing your request."}), 500
