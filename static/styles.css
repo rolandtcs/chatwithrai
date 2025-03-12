@@ -207,7 +207,7 @@ textarea::placeholder {
     border-radius: 10px;
     padding: 8px 12px;
     margin: 5px 0;
-    max-width: 80%;
+    max-width: 30%;
     text-align: left;
     font-size: 14px;
     font-style: italic;
