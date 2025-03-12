@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
     async function initiateConversation() {
         const initialMessage =
             "Hello! I'm RAI! How can I assist you today?\n" +
-            "To change languageat any time, enter:\n" +
+            "To change language at any time, enter:\n" +
             "1️⃣ English\n2️⃣ 中文\n3️⃣ Melayu\n4️⃣ தமிழ் (Optional, English is default)";
         addMessage("RAI", initialMessage, "ai");
         chatBox.scrollTop = chatBox.scrollHeight;
