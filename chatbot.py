@@ -4,8 +4,13 @@ import os
 # OpenAI API Client
 client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
+# ✅ Global variable to store chat history
+conversation_history = []
+
 # Function to get chatbot response
 def chatbot_response(user_message, user_language="English"):
+    global conversation_history  # Ensure we update the global chat history
+
     # ✅ Language-specific system instructions
     language_prompts = {
         "English": "You are a helpful AI assistant. Reply in English.",
@@ -27,14 +32,26 @@ def chatbot_response(user_message, user_language="English"):
         "7. Your goal is to make every digital process feel easy and achievable, ensuring users feel supported and empowered."
     )
 
-    # ✅ Combine general assistant prompt with language-specific instruction
-    system_message = language_prompts.get(user_language, language_prompts["English"]) + "\n\n" + assistant_instructions
+    # ✅ Add system message only at the start of the conversation
+    if not conversation_history:
+        system_message = {
+            "role": "system",
+            "content": language_prompts.get(user_language, language_prompts["English"]) + "\n\n" + assistant_instructions
+        }
+        conversation_history.append(system_message)
 
+    # ✅ Add user message to conversation history
+    conversation_history.append({"role": "user", "content": user_message})
+
+    # ✅ Send entire conversation history to OpenAI
     response = client.chat.completions.create(
         model="gpt-4",
-        messages=[
-            {"role": "system", "content": system_message},  # ✅ Ensures response is in the chosen language
-            {"role": "user", "content": user_message}
-        ]
+        messages=conversation_history
     )
-    return response.choices[0].message.content
+
+    bot_reply = response.choices[0].message.content
+
+    # ✅ Add chatbot response to conversation history
+    conversation_history.append({"role": "assistant", "content": bot_reply})
+
+    return bot_reply
