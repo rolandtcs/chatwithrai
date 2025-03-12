@@ -2,14 +2,17 @@ document.addEventListener("DOMContentLoaded", function () {
     const chatBox = document.getElementById("chat-box");
     const userInput = document.getElementById("user-input");
     const sendButton = document.getElementById("send");
-    let userLanguage = "English"; // Default language
+    let userLanguage = "English"; // ✅ Default language is English
 
     // ✅ Function to start conversation with language selection
     async function initiateConversation() {
-        const initialMessage =
-        "Hello! I'm RAI! How can I assist you today?\n" +
-        "To change language, please enter:\n" +
-        "1️⃣ English\n2️⃣ 中文\n3️⃣ Melayu\n4️⃣ தமிழ்";
+        const initialMessage = `Hello! I'm RAI! How can I assist you today?<br>
+        To change language at any time, just type:<br>
+        1️⃣ English<br>
+        2️⃣ 中文<br>
+        3️⃣ Melayu<br>
+        4️⃣ தமிழ்`;
+
         addMessage("RAI", initialMessage, "ai");
         chatBox.scrollTop = chatBox.scrollHeight;
     }
@@ -19,38 +22,33 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!userMessage) return;
 
         addMessage("You", userMessage, "user");
-        userInput.value = ''; // Clear input field
+        userInput.value = ''; // ✅ Clear input field
         chatBox.scrollTop = chatBox.scrollHeight;
 
-        // ✅ Detect language choice
-        if (!userLanguage || userLanguage === "English") {
-            if (["1", "English", "english"].includes(userMessage.trim())) {
-                userLanguage = "English";
-                addMessage("RAI", "Great! I'll assist you in English. How may I help you?", "ai");
-                return;
-            } else if (["2", "中文", "chinese", "mandarin"].includes(userMessage.trim())) {
-                userLanguage = "Chinese";
-                addMessage("RAI", "很好！我会用中文帮助您。请问有什么需要？", "ai");
-                return;
-            } else if (["3", "Melayu", "malay"].includes(userMessage.trim())) {
-                userLanguage = "Malay";
-                addMessage("RAI", "Bagus! Saya akan membantu anda dalam bahasa Melayu. Apa yang boleh saya bantu?", "ai");
-                return;
-            } else if (["4", "தமிழ்", "tamil"].includes(userMessage.trim())) {
-                userLanguage = "Tamil";
-                addMessage("RAI", "நன்று! நான் தமிழ் மூலம் உங்களை உதவுவேன். எப்படி உதவலாம்?", "ai");
-                return;
-            } else {
-                addMessage("RAI", "❌ Please select a valid option: 1️⃣ English, 2️⃣ 中文, 3️⃣ Melayu, 4️⃣ தமிழ்", "ai");
-                return;
-            }
+        // ✅ Detect if the user wants to change language
+        if (["1", "English", "english"].includes(userMessage.trim())) {
+            userLanguage = "English";
+            addMessage("RAI", "✅ Language changed to English. How can I assist you?", "ai");
+            return;
+        } else if (["2", "中文", "chinese", "mandarin"].includes(userMessage.trim())) {
+            userLanguage = "Chinese";
+            addMessage("RAI", "✅ 语言已更改为中文。请问有什么需要帮助？", "ai");
+            return;
+        } else if (["3", "Melayu", "malay"].includes(userMessage.trim())) {
+            userLanguage = "Malay";
+            addMessage("RAI", "✅ Bahasa telah ditukar ke Melayu. Bagaimana saya boleh membantu anda?", "ai");
+            return;
+        } else if (["4", "தமிழ்", "tamil"].includes(userMessage.trim())) {
+            userLanguage = "Tamil";
+            addMessage("RAI", "✅ மொழி தமிழ் ஆக மாற்றப்பட்டுள்ளது. எப்படி உதவலாம்?", "ai");
+            return;
         }
 
         try {
             const response = await fetch('/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: userMessage, language: userLanguage }) // ✅ Send language preference to backend
+                body: JSON.stringify({ message: userMessage, language: userLanguage }) // ✅ Send selected language
             });
 
             const data = await response.json();
