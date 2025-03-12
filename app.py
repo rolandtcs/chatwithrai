@@ -7,10 +7,6 @@ app = Flask(__name__)
 # ✅ Define OpenAI client properly
 client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-@app.route("/", methods=["GET"])
-def home():
-    return "Chatbot is running!"
-
 @app.route("/chat", methods=["POST"])
 def chat():
     data = request.get_json()
