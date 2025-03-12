@@ -205,9 +205,9 @@ textarea::placeholder {
     display: inline-block;
     background: #e0e0e0;
     border-radius: 10px;
-    padding: 8px 12px;
+    padding: 20px 12px;
     margin: 5px 0;
-    max-width: 30%;
+    max-width: 10%;
     text-align: left;
     font-size: 14px;
     font-style: italic;
