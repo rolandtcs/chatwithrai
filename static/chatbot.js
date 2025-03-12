@@ -6,11 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Function to initiate the conversation
     async function initiateConversation() {
         const initialMessage = "Hello there! I am RAI, how may I assist you?";
-
-        // Add AI's initial message
         addMessage("RAI", initialMessage, "ai");
-
-        // Scroll to the latest message
         chatBox.scrollTop = chatBox.scrollHeight;
     }
 
@@ -18,27 +14,31 @@ document.addEventListener("DOMContentLoaded", function () {
         const userMessage = userInput.value.trim();
         if (!userMessage) return;
 
-        // Add user message
         addMessage("You", userMessage, "user");
-        userInput.value = ''; // Clear input
-
-        // Scroll to latest message
+        userInput.value = ''; // Clear input field
         chatBox.scrollTop = chatBox.scrollHeight;
 
-        // Send to backend
-        const response = await fetch('/chat', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: userMessage })
-        });
+        try {
+            const response = await fetch('/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: userMessage })
+            });
 
-        const data = await response.json();
+            const data = await response.json();
+            console.log("Received response from API:", data); // ✅ Debugging
 
-        // Add AI response
-        addMessage("RAI", data.response || "Sorry, something went wrong!", "ai");
-
-        // Scroll to latest message
-        chatBox.scrollTop = chatBox.scrollHeight;
+            // ✅ FIX: Correct key (data.reply instead of data.response)
+            if (data.reply) {
+                addMessage("RAI", data.reply, "ai");
+            } else {
+                console.error("Error: Unexpected API response format", data);
+                addMessage("RAI", "Sorry, something went wrong!", "ai");
+            }
+        } catch (error) {
+            console.error("Error sending message:", error);
+            addMessage("RAI", "Sorry, something went wrong!", "ai");
+        }
     }
 
     function addMessage(sender, text, type) {
@@ -46,12 +46,9 @@ document.addEventListener("DOMContentLoaded", function () {
         messageDiv.classList.add("message", type);
         messageDiv.innerHTML = `<strong>${sender}:</strong><br>${text.replace(/\n/g, '<br>')}`;
         chatBox.appendChild(messageDiv);
-
-        // Auto-scroll after adding message
         chatBox.scrollTop = chatBox.scrollHeight;
     }
 
-    // Enter key to send message
     userInput.addEventListener("keydown", function (event) {
         if (event.key === "Enter") {
             event.preventDefault(); // Prevent new line in textarea
@@ -59,9 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Button click to send message
     sendButton.addEventListener("click", sendMessage);
 
-    // Initiate the conversation when the page loads
     initiateConversation();
 });
