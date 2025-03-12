@@ -14,15 +14,12 @@ def home():
 def chat():
     try:
         data = request.get_json(force=True, silent=True)
-        print("Received data:", data)  # ✅ Debugging: Log received data
+        print("Received data:", data)
 
         if not data or "message" not in data:
-            print("Error: Invalid JSON format received")  # ✅ Log JSON error
             return jsonify({"reply": "Invalid request. Please send a JSON message."}), 400
 
         user_message = data["message"]
-
-        # ✅ Debugging: Log before calling OpenAI API
         print("Sending request to OpenAI:", user_message)
 
         response = client.chat.completions.create(
@@ -33,14 +30,17 @@ def chat():
             ]
         )
 
-        # ✅ Debugging: Log the full OpenAI response
-        print("OpenAI response:", response)
+        print("OpenAI response:", response)  # ✅ Debugging: Log the response
 
-        return jsonify({"reply": response.choices[0].message.content})
+        # ✅ Fix: Extract response message correctly
+        bot_reply = response.choices[0].message.content
+
+        return jsonify({"reply": bot_reply})
 
     except Exception as e:
-        print("Error:", e)  # ✅ Log the error for debugging
-        return jsonify({"reply": "Sorry, there was an error processing your request."})
+        print("Error:", e)
+        return jsonify({"reply": "Sorry, there was an error processing your request."}), 500
+
 
 if __name__ == "__main__":
     app.run(debug=True)
