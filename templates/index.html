@@ -2,31 +2,72 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>Bubu Chat</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+        }
+        #chatbox {
+            width: 50%;
+            margin: auto;
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px gray;
+        }
+        .message {
+            text-align: left;
+            margin: 10px;
+            padding: 10px;
+            border-radius: 10px;
+        }
+        .user {
+            background-color: #d1ecf1;
+            align-self: flex-end;
+        }
+        .bot {
+            background-color: #f8d7da;
+        }
+    </style>
 </head>
 <body>
-
-<div class="chat-container">
-    <!-- Chat header (optional) -->
-    <div class="chat-header">
-        <div class="contact-info">
-            <span class="contact-name">Chat with RAI</span>
-        </div>
+    <h2>AI Chatbot</h2>
+    <div id="chatbox">
+        <div id="chatlog"></div>
+        <input type="text" id="userInput" placeholder="Type a message...">
+        <button onclick="sendMessage()">Send</button>
     </div>
 
-    <!-- Chat messages container -->
-    <div class="chat-box" id="chat-box"></div>
+    <script>
+        function sendMessage() {
+            var userInput = document.getElementById("userInput").value;
+            var chatlog = document.getElementById("chatlog");
 
-    <!-- Input container -->
-    <div class="input-container" id="input-container">
-        <textarea id="user-input" placeholder="Type a message..." rows="1"></textarea>
-        <button id="send">Send</button>
-    </div>
-</div>
+            var userMessage = document.createElement("div");
+            userMessage.className = "message user";
+            userMessage.innerText = "You: " + userInput;
+            chatlog.appendChild(userMessage);
 
-<script src="chatbot.js"></script>
+            fetch("/chat", {
+                method: "POST",
+                body: JSON.stringify({ message: userInput }),
+                headers: { "Content-Type": "application/json" }
+            })
+            .then(response => response.json())
+            .then(data => {
+                var botMessage = document.createElement("div");
+                botMessage.className = "message bot";
+                botMessage.innerText = "Chatbot: " + data.reply;
+                chatlog.appendChild(botMessage);
+            });
 
+            document.getElementById("userInput").value = "";
+        }
+    </script>
 </body>
 </html>
