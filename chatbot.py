@@ -8,7 +8,7 @@ client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 conversation_history = []
 
 # Function to get chatbot response
-def chatbot_response(user_message, user_language="English"):
+def chatbot_response(user_message, user_language="English", conversation_history=None):
     global conversation_history  # Ensure we update the global chat history
 
     # ✅ Language-specific system instructions
