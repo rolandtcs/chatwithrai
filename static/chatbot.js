@@ -70,4 +70,14 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-   
+    userInput.addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            sendMessage();
+        }
+    });
+
+    sendButton.addEventListener("click", sendMessage);
+
+    initiateConversation();
+});
