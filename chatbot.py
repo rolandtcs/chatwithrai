@@ -4,8 +4,13 @@ import os
 # OpenAI API Client
 client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-# ✅ Function to get chatbot response
-def chatbot_response(user_message, user_language="English", conversation_history=[]):
+# ✅ Global variable to store chat history
+conversation_history = []
+
+# Function to get chatbot response
+def chatbot_response(user_message, user_language="English"):
+    global conversation_history  # Ensure we update the global chat history
+
     # ✅ Language-specific system instructions
     language_prompts = {
         "English": "You are a helpful AI assistant. Reply in English.",
@@ -27,14 +32,17 @@ def chatbot_response(user_message, user_language="English", conversation_history
         "7. Your goal is to make every digital process feel easy and achievable, ensuring users feel supported and empowered."
     )
 
-    # ✅ Add system message **only at the start of the conversation**
-    if len(conversation_history) == 0:
+    # ✅ Add system message only at the start of the conversation
+    if not conversation_history:
         system_message = {
             "role": "system",
-            "content": language_prompts.get(user_language, "You are a helpful AI assistant. Reply in English.") 
-                      + "\n\n" + assistant_instructions
+            "content": language_prompts.get(user_language, language_prompts["English"]) + "\n\n" + assistant_instructions
         }
         conversation_history.append(system_message)
+
+    # ✅ Ensure chatbot always replies in the selected language
+    language_instruction = language_prompts.get(user_language, language_prompts["English"])
+    conversation_history.append({"role": "system", "content": language_instruction})
 
     # ✅ Add user message to conversation history
     conversation_history.append({"role": "user", "content": user_message})
@@ -50,4 +58,4 @@ def chatbot_response(user_message, user_language="English", conversation_history
     # ✅ Add chatbot response to conversation history
     conversation_history.append({"role": "assistant", "content": bot_reply})
 
-    return bot_reply, conversation_history
+    return bot_reply
