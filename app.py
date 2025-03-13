@@ -30,7 +30,7 @@ def chat():
         conversation_history = session.get("conversation_history", [])
 
         # ✅ Get chatbot response with updated history
-        bot_reply, conversation_history = chatbot_response(user_message, user_language, conversation_history)
+        bot_reply, conversation_history = chatbot_response(user_message, user_language, session.get("conversation_history", []))
 
         # ✅ Save updated conversation history and language in session
         session["conversation_history"] = conversation_history
