@@ -7,10 +7,19 @@ document.addEventListener("DOMContentLoaded", function () {
     let userLanguage = "English"; // Default language
     let conversationHistory = []; // ✅ Store conversation history
 
-    // ✅ Initial message
+    // ✅ Move addMessage() above its first usage
+    function addMessage(sender, text, type) {
+        const messageDiv = document.createElement("div");
+        messageDiv.classList.add("message", type);
+        messageDiv.innerHTML = `<strong>${sender}:</strong><br>${text.replace(/\n/g, '<br>')}`;
+        chatBox.appendChild(messageDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // ✅ Initial message function
     async function initiateConversation() {
         const initialMessage = "Hello! I'm RAI! How can I assist you today?";
-        addMessage("RAI", initialMessage, "ai");
+        addMessage("RAI", initialMessage, "ai"); // ✅ Now this won't throw an error
         chatBox.scrollTop = chatBox.scrollHeight;
     }
 
@@ -26,13 +35,16 @@ document.addEventListener("DOMContentLoaded", function () {
     changeLangBtn.addEventListener("change", function () {
         userLanguage = changeLangBtn.value;
         addMessage("RAI", languageConfirmations[userLanguage], "ai");
+
+        // ✅ Keep conversation history even when language is changed
+        conversationHistory.push({ role: "system", content: `Language changed to ${userLanguage}` });
     });
 
     async function sendMessage() {
         const userMessage = userInput.value.trim();
         if (!userMessage) return;
 
-        addMessage("You", userMessage, "user");
+        addMessage("You", userMessage, "user"); // ✅ Now this won't throw an error
         userInput.value = '';
         chatBox.scrollTop = chatBox.scrollHeight;
 
@@ -48,7 +60,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    message: userMessage,
+                    messages: conversationHistory,
                     language: userLanguage
                 }) // ✅ Send full conversation history
             });
@@ -58,8 +70,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (data.reply) {
                 addMessage("RAI", data.reply, "ai");
-
-                // ✅ Append chatbot response to conversation history
                 conversationHistory.push({ role: "assistant", content: data.reply });
             } else {
                 addMessage("RAI", "Sorry, something went wrong!", "ai");
@@ -67,6 +77,24 @@ document.addEventListener("DOMContentLoaded", function () {
         } catch (error) {
             removeTypingBubble(typingBubble);
             addMessage("RAI", "Sorry, something went wrong!", "ai");
+        }
+    }
+
+    function addTypingBubble() {
+        const typingDiv = document.createElement("div");
+        typingDiv.classList.add("message", "typing-bubble");
+        typingDiv.innerHTML = `<span class="typing-dots">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+        </span>`;
+        chatBox.appendChild(typingDiv);
+        return typingDiv;
+    }
+
+    function removeTypingBubble(typingDiv) {
+        if (typingDiv && typingDiv.parentNode) {
+            typingDiv.parentNode.removeChild(typingDiv);
         }
     }
 
@@ -79,5 +107,5 @@ document.addEventListener("DOMContentLoaded", function () {
 
     sendButton.addEventListener("click", sendMessage);
 
-    initiateConversation();
+    initiateConversation(); // ✅ Start chat
 });
