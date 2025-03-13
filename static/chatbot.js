@@ -43,31 +43,31 @@ document.addEventListener("DOMContentLoaded", function () {
     async function sendMessage() {
         const userMessage = userInput.value.trim();
         if (!userMessage) return;
-
-        addMessage("You", userMessage, "user"); // ✅ Now this won't throw an error
+    
+        addMessage("You", userMessage, "user"); 
         userInput.value = '';
         chatBox.scrollTop = chatBox.scrollHeight;
-
+    
         // ✅ Show Typing Bubble
         const typingBubble = addTypingBubble();
         chatBox.scrollTop = chatBox.scrollHeight;
-
+    
         // ✅ Append user message to conversation history
         conversationHistory.push({ role: "user", content: userMessage });
-
+    
         try {
             const response = await fetch('/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    messages: conversationHistory,
+                    message: userMessage,  // ✅ Send "message" key instead of "messages"
                     language: userLanguage
-                }) // ✅ Send full conversation history
+                }) 
             });
-
+    
             const data = await response.json();
             removeTypingBubble(typingBubble);
-
+    
             if (data.reply) {
                 addMessage("RAI", data.reply, "ai");
                 conversationHistory.push({ role: "assistant", content: data.reply });
@@ -79,6 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
             addMessage("RAI", "Sorry, something went wrong!", "ai");
         }
     }
+    
 
     function addTypingBubble() {
         const typingDiv = document.createElement("div");
