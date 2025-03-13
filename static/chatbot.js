@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const chatBox = document.getElementById("chat-box");
     const userInput = document.getElementById("user-input");
     const sendButton = document.getElementById("send");
-    const changeLangBtn = document.getElementById("change-lang-btn"); // ✅ Select dropdown
+    const changeLangBtn = document.getElementById("change-lang-btn"); // ✅ Language dropdown
 
     let userLanguage = "English"; // Default language
 
@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const response = await fetch('/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: userMessage, language: userLanguage })
+                body: JSON.stringify({ message: userMessage, language: userLanguage }) // ✅ Send language preference
             });
 
             const data = await response.json();
