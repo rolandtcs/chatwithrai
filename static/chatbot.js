@@ -2,10 +2,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const chatBox = document.getElementById("chat-box");
     const userInput = document.getElementById("user-input");
     const sendButton = document.getElementById("send");
-    const languageDropdown = document.getElementById("language-dropdown"); // ✅ Language dropdown button
+    const changeLangBtn = document.getElementById("change-lang-btn"); // ✅ Language dropdown
 
     let userLanguage = "English"; // Default language
-    const userId = generateUserId(); // ✅ Generate a user ID
 
     // ✅ Initial message
     async function initiateConversation() {
@@ -22,10 +21,15 @@ document.addEventListener("DOMContentLoaded", function () {
         "Tamil": "மொழி தமிழாக மாற்றப்பட்டது. நான் எப்படி உதவலாம்?"
     };
 
-    // ✅ Update language when user selects from dropdown
-    languageDropdown.addEventListener("change", function () {
-        userLanguage = languageDropdown.value;
+    // ✅ Change language and inform the user
+    changeLangBtn.addEventListener("change", function () {
+        userLanguage = changeLangBtn.value;
+
+        // ✅ Notify user in the newly selected language
         addMessage("RAI", languageConfirmations[userLanguage], "ai");
+
+        // ✅ Save to localStorage (optional) - persist language preference
+        localStorage.setItem("selectedLanguage", userLanguage);
     });
 
     async function sendMessage() {
@@ -44,11 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const response = await fetch('/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    message: userMessage, 
-                    language: userLanguage, // ✅ Send language preference
-                    user_id: userId // ✅ Send user ID
-                }) 
+                body: JSON.stringify({ message: userMessage, language: userLanguage }) // ✅ Send updated language
             });
 
             const data = await response.json();
@@ -91,10 +91,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    function generateUserId() {
-        return "user_" + Math.random().toString(36).substr(2, 9);
-    }
-
     userInput.addEventListener("keydown", function (event) {
         if (event.key === "Enter") {
             event.preventDefault();
@@ -104,5 +100,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     sendButton.addEventListener("click", sendMessage);
 
-    initiateConversation();
+    // ✅ Restore previously selected language (if any)
+    const savedLanguage = localStorage.getItem("selectedLanguage");
+    if (savedLanguage) {
+        userLanguage = savedLanguage;
+        changeLangBtn.value = savedLanguage;
+    }
+
+    initiateConversation(); // ✅ Start chat
 });
