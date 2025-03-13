@@ -4,22 +4,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const sendButton = document.getElementById("send");
     const changeLangBtn = document.getElementById("change-lang-btn");
 
-    let userLanguage = "English"; // Default language
+    let userLanguage = localStorage.getItem("selectedLanguage") || "English"; // ✅ Store selected language persistently
     let conversationHistory = []; // ✅ Store conversation history
 
-    // ✅ Move addMessage() above its first usage
-    function addMessage(sender, text, type) {
-        const messageDiv = document.createElement("div");
-        messageDiv.classList.add("message", type);
-        messageDiv.innerHTML = `<strong>${sender}:</strong><br>${text.replace(/\n/g, '<br>')}`;
-        chatBox.appendChild(messageDiv);
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }
-
-    // ✅ Initial message function
+    // ✅ Initial message
     async function initiateConversation() {
         const initialMessage = "Hello! I'm RAI! How can I assist you today?";
-        addMessage("RAI", initialMessage, "ai"); // ✅ Now this won't throw an error
+        addMessage("RAI", initialMessage, "ai");
         chatBox.scrollTop = chatBox.scrollHeight;
     }
 
@@ -34,42 +25,42 @@ document.addEventListener("DOMContentLoaded", function () {
     // ✅ Change language when user selects from dropdown
     changeLangBtn.addEventListener("change", function () {
         userLanguage = changeLangBtn.value;
+        localStorage.setItem("selectedLanguage", userLanguage); // ✅ Store selected language
         addMessage("RAI", languageConfirmations[userLanguage], "ai");
-
-        // ✅ Keep conversation history even when language is changed
-        conversationHistory.push({ role: "system", content: `Language changed to ${userLanguage}` });
     });
 
     async function sendMessage() {
         const userMessage = userInput.value.trim();
         if (!userMessage) return;
-    
-        addMessage("You", userMessage, "user"); 
+
+        addMessage("You", userMessage, "user");
         userInput.value = '';
         chatBox.scrollTop = chatBox.scrollHeight;
-    
+
         // ✅ Show Typing Bubble
         const typingBubble = addTypingBubble();
         chatBox.scrollTop = chatBox.scrollHeight;
-    
+
         // ✅ Append user message to conversation history
         conversationHistory.push({ role: "user", content: userMessage });
-    
+
         try {
             const response = await fetch('/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    message: userMessage,  // ✅ Send "message" key instead of "messages"
-                    language: userLanguage
-                }) 
+                    messages: conversationHistory,
+                    language: userLanguage  // ✅ Ensure chatbot always responds in selected language
+                })
             });
-    
+
             const data = await response.json();
             removeTypingBubble(typingBubble);
-    
+
             if (data.reply) {
                 addMessage("RAI", data.reply, "ai");
+
+                // ✅ Append chatbot response to conversation history
                 conversationHistory.push({ role: "assistant", content: data.reply });
             } else {
                 addMessage("RAI", "Sorry, something went wrong!", "ai");
@@ -79,7 +70,14 @@ document.addEventListener("DOMContentLoaded", function () {
             addMessage("RAI", "Sorry, something went wrong!", "ai");
         }
     }
-    
+
+    function addMessage(sender, text, type) {
+        const messageDiv = document.createElement("div");
+        messageDiv.classList.add("message", type);
+        messageDiv.innerHTML = `<strong>${sender}:</strong><br>${text.replace(/\n/g, '<br>')}`;
+        chatBox.appendChild(messageDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
 
     function addTypingBubble() {
         const typingDiv = document.createElement("div");
@@ -108,5 +106,5 @@ document.addEventListener("DOMContentLoaded", function () {
 
     sendButton.addEventListener("click", sendMessage);
 
-    initiateConversation(); // ✅ Start chat
+    initiateConversation();
 });
