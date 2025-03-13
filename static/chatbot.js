@@ -7,24 +7,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let userLanguage = "English"; // Default language
 
-    // ✅ Show language dropdown when clicking "Change Language" button
+    // ✅ FIX: Toggle Language Dropdown (Show/Hide on Click)
     changeLangBtn.addEventListener("click", function () {
-        languageSelect.classList.toggle("hidden"); // Show/hide dropdown
+        if (languageSelect.style.display === "none" || languageSelect.style.display === "") {
+            languageSelect.style.display = "block"; // Show dropdown
+        } else {
+            languageSelect.style.display = "none"; // Hide dropdown
+        }
     });
 
     // ✅ Change language when user selects from dropdown
     languageSelect.addEventListener("change", function () {
         userLanguage = languageSelect.value;
         addMessage("RAI", `Language changed to ${userLanguage}. How may I assist you?`, "ai");
-        languageSelect.classList.add("hidden"); // Hide dropdown after selection
+        languageSelect.style.display = "none"; // Hide dropdown after selection
     });
-
-    // ✅ Function to start conversation
-    async function initiateConversation() {
-        const initialMessage = "Hello! I'm RAI! How can I assist you today?";
-        addMessage("RAI", initialMessage, "ai");
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }
 
     async function sendMessage() {
         const userMessage = userInput.value.trim();
@@ -42,11 +39,11 @@ document.addEventListener("DOMContentLoaded", function () {
             const response = await fetch('/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: userMessage, language: userLanguage }) // ✅ Send language preference to backend
+                body: JSON.stringify({ message: userMessage, language: userLanguage })
             });
 
             const data = await response.json();
-            removeTypingBubble(typingBubble); // ✅ Remove typing bubble
+            removeTypingBubble(typingBubble);
 
             if (data.reply) {
                 addMessage("RAI", data.reply, "ai");
@@ -67,7 +64,6 @@ document.addEventListener("DOMContentLoaded", function () {
         chatBox.scrollTop = chatBox.scrollHeight;
     }
 
-    // ✅ Function to Show Typing Bubble (WhatsApp Style)
     function addTypingBubble() {
         const typingDiv = document.createElement("div");
         typingDiv.classList.add("message", "typing-bubble");
@@ -80,7 +76,6 @@ document.addEventListener("DOMContentLoaded", function () {
         return typingDiv;
     }
 
-    // ✅ Function to Remove Typing Bubble
     function removeTypingBubble(typingDiv) {
         if (typingDiv && typingDiv.parentNode) {
             typingDiv.parentNode.removeChild(typingDiv);
@@ -95,6 +90,4 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     sendButton.addEventListener("click", sendMessage);
-
-    initiateConversation(); // ✅ Start chat
 });

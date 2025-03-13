@@ -109,6 +109,7 @@ body {
     align-items: center;
     box-sizing: border-box;
     position: relative;
+    gap: 8px;
     z-index: 10; /* Ensures the input box stays above chat content */
 }
 
