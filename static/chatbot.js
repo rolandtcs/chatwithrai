@@ -7,6 +7,15 @@ document.addEventListener("DOMContentLoaded", function () {
     let userLanguage = localStorage.getItem("selectedLanguage") || "English"; // ✅ Store selected language persistently
     let conversationHistory = []; // ✅ Store conversation history
 
+    // ✅ Function to display messages in chatbox
+    function addMessage(sender, text, type) {
+        const messageDiv = document.createElement("div");
+        messageDiv.classList.add("message", type);
+        messageDiv.innerHTML = `<strong>${sender}:</strong><br>${text.replace(/\n/g, '<br>')}`;
+        chatBox.appendChild(messageDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
     // ✅ Initial message
     async function initiateConversation() {
         const initialMessage = "Hello! I'm RAI! How can I assist you today?";
@@ -56,6 +65,24 @@ document.addEventListener("DOMContentLoaded", function () {
         } catch (error) {
             removeTypingBubble(typingBubble);
             addMessage("RAI", "Sorry, something went wrong!", "ai");
+        }
+    }
+
+    function addTypingBubble() {
+        const typingDiv = document.createElement("div");
+        typingDiv.classList.add("message", "typing-bubble");
+        typingDiv.innerHTML = `<span class="typing-dots">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+        </span>`;
+        chatBox.appendChild(typingDiv);
+        return typingDiv;
+    }
+
+    function removeTypingBubble(typingDiv) {
+        if (typingDiv && typingDiv.parentNode) {
+            typingDiv.parentNode.removeChild(typingDiv);
         }
     }
 
