@@ -4,10 +4,10 @@ import os
 # OpenAI API Client
 client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-# ✅ Function to get chatbot response
-def chatbot_response(user_message, user_language="English", chat_history=None):
-    if chat_history is None:
-        chat_history = []  # Initialize if not provided
+# Function to get chatbot response
+def chatbot_response(user_message, user_language="English", conversation_history=None):
+    if conversation_history is None:
+        conversation_history = []  # ✅ Use local conversation history instead of global
 
     # ✅ Language-specific system instructions
     language_prompts = {
@@ -30,30 +30,28 @@ def chatbot_response(user_message, user_language="English", chat_history=None):
         "7. Your goal is to make every digital process feel easy and achievable, ensuring users feel supported and empowered."
     )
 
-    # ✅ Add system message only at the start of the conversation
-    if not chat_history:
-        system_message = {
-            "role": "system",
-            "content": language_prompts.get(user_language, language_prompts["English"]) + "\n\n" + assistant_instructions
-        }
-        chat_history.append(system_message)
+    # ✅ Ensure the chatbot always responds in the latest selected language
+    system_message = {
+        "role": "system",
+        "content": language_prompts.get(user_language, language_prompts["English"]) + "\n\n" + assistant_instructions
+    }
 
-    # ✅ Ensure chatbot always replies in the selected language
-    language_instruction = language_prompts.get(user_language, language_prompts["English"])
-    chat_history.append({"role": "system", "content": language_instruction})
+    # ✅ Add system message only at the start of the conversation
+    if not any(msg["role"] == "system" for msg in conversation_history):
+        conversation_history.insert(0, system_message)
 
     # ✅ Add user message to conversation history
-    chat_history.append({"role": "user", "content": user_message})
+    conversation_history.append({"role": "user", "content": user_message})
 
     # ✅ Send entire conversation history to OpenAI
     response = client.chat.completions.create(
         model="gpt-4",
-        messages=chat_history
+        messages=conversation_history
     )
 
     bot_reply = response.choices[0].message.content
 
     # ✅ Add chatbot response to conversation history
-    chat_history.append({"role": "assistant", "content": bot_reply})
+    conversation_history.append({"role": "assistant", "content": bot_reply})
 
-    return bot_reply, chat_history  # Return both response and updated history
+    return bot_reply, conversation_history  # ✅ Return updated conversation history

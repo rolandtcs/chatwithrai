@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const sendButton = document.getElementById("send");
     const changeLangBtn = document.getElementById("change-lang-btn");
 
-    let userLanguage = localStorage.getItem("selectedLanguage") || "English"; // ✅ Store selected language persistently
+    let userLanguage = "English"; // Default language
     let conversationHistory = []; // ✅ Store conversation history
 
     // ✅ Initial message
@@ -25,7 +25,6 @@ document.addEventListener("DOMContentLoaded", function () {
     // ✅ Change language when user selects from dropdown
     changeLangBtn.addEventListener("change", function () {
         userLanguage = changeLangBtn.value;
-        localStorage.setItem("selectedLanguage", userLanguage); // ✅ Store selected language
         addMessage("RAI", languageConfirmations[userLanguage], "ai");
     });
 
@@ -49,9 +48,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    messages: conversationHistory,
-                    language: userLanguage  // ✅ Ensure chatbot always responds in selected language
-                })
+                    message: userMessage,
+                    language: userLanguage
+                }) // ✅ Send full conversation history
             });
 
             const data = await response.json();
@@ -71,40 +70,4 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    function addMessage(sender, text, type) {
-        const messageDiv = document.createElement("div");
-        messageDiv.classList.add("message", type);
-        messageDiv.innerHTML = `<strong>${sender}:</strong><br>${text.replace(/\n/g, '<br>')}`;
-        chatBox.appendChild(messageDiv);
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }
-
-    function addTypingBubble() {
-        const typingDiv = document.createElement("div");
-        typingDiv.classList.add("message", "typing-bubble");
-        typingDiv.innerHTML = `<span class="typing-dots">
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-        </span>`;
-        chatBox.appendChild(typingDiv);
-        return typingDiv;
-    }
-
-    function removeTypingBubble(typingDiv) {
-        if (typingDiv && typingDiv.parentNode) {
-            typingDiv.parentNode.removeChild(typingDiv);
-        }
-    }
-
-    userInput.addEventListener("keydown", function (event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            sendMessage();
-        }
-    });
-
-    sendButton.addEventListener("click", sendMessage);
-
-    initiateConversation();
-});
+   
