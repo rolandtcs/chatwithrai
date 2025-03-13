@@ -15,7 +15,7 @@ def chat():
         data = request.get_json(force=True, silent=True)
         
         if not data or "message" not in data:
-            return jsonify({"reply": "Oops! I didn't understand that. Please try again."}), 400
+            return jsonify({"reply": "Invalid request. Please send a JSON message with 'message'."}), 400
 
         user_message = data["message"]
         user_language = data.get("language", "English")  # ✅ Default to English if no language is provided
