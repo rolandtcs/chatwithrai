@@ -9,7 +9,7 @@
 <body>
 
 <div class="chat-container">
-    <!-- Chat header (optional) -->
+    <!-- Chat header -->
     <div class="chat-header">
         <div class="contact-info">
             <span class="contact-name">RAI</span>
@@ -21,6 +21,17 @@
 
     <!-- Input container -->
     <div class="input-container" id="input-container">
+        <!-- 🔹 Change Language Button -->
+        <button id="change-lang-btn">🌍</button>
+
+        <!-- 🔹 Dropdown for language selection (hidden initially) -->
+        <select id="language-select" class="hidden">
+            <option value="English">English</option>
+            <option value="Chinese">中文</option>
+            <option value="Malay">Melayu</option>
+            <option value="Tamil">தமிழ்</option>
+        </select>
+
         <textarea id="user-input" placeholder="Type a message..." rows="1"></textarea>
         <button id="send">Send</button>
     </div>

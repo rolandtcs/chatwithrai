@@ -244,3 +244,37 @@ textarea::placeholder {
         opacity: 1;
     }
 }
+
+/* ✅ Change Language Button */
+#change-lang-btn {
+    padding: 10px 12px;
+    border: none;
+    background-color: #128C7E;
+    color: white;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+#change-lang-btn:hover {
+    background-color: #0e6b63;
+}
+
+/* ✅ Language Dropdown */
+#language-select {
+    display: none;
+    padding: 6px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    background-color: white;
+    position: absolute;
+    left: 10px;
+    bottom: 60px;
+    z-index: 100;
+}
+
+/* ✅ Show dropdown when toggled */
+.hidden {
+    display: none;
+}
