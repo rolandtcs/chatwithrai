@@ -26,11 +26,6 @@ document.addEventListener("DOMContentLoaded", function () {
     changeLangBtn.addEventListener("change", function () {
         userLanguage = changeLangBtn.value;
         addMessage("RAI", languageConfirmations[userLanguage], "ai");
-
-        // ✅ Clear previous conversation history and start fresh
-        conversationHistory = [
-            { role: "system", content: getSystemMessage(userLanguage) }
-        ];
     });
 
     async function sendMessage() {
@@ -53,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    messages: conversationHistory,
+                    message: userMessage,
                     language: userLanguage
                 }) // ✅ Send full conversation history
             });
@@ -75,51 +70,4 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    function addMessage(sender, text, type) {
-        const messageDiv = document.createElement("div");
-        messageDiv.classList.add("message", type);
-        messageDiv.innerHTML = `<strong>${sender}:</strong><br>${text.replace(/\n/g, '<br>')}`;
-        chatBox.appendChild(messageDiv);
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }
-
-    function addTypingBubble() {
-        const typingDiv = document.createElement("div");
-        typingDiv.classList.add("message", "typing-bubble");
-        typingDiv.innerHTML = `<span class="typing-dots">
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-        </span>`;
-        chatBox.appendChild(typingDiv);
-        return typingDiv;
-    }
-
-    function removeTypingBubble(typingDiv) {
-        if (typingDiv && typingDiv.parentNode) {
-            typingDiv.parentNode.removeChild(typingDiv);
-        }
-    }
-
-    // ✅ Function to get system message based on selected language
-    function getSystemMessage(language) {
-        const languagePrompts = {
-            "English": "You are a helpful AI assistant. Reply in English.",
-            "Chinese": "你是一个有帮助的AI助手。请用中文回答。",
-            "Malay": "Anda adalah pembantu AI yang berguna. Sila balas dalam bahasa Melayu.",
-            "Tamil": "நீங்கள் உதவியாளராக உள்ள AI உதவியாளர். தமிழில் பதிலளிக்கவும்."
-        };
-        return languagePrompts[language] || languagePrompts["English"];
-    }
-
-    userInput.addEventListener("keydown", function (event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            sendMessage();
-        }
-    });
-
-    sendButton.addEventListener("click", sendMessage);
-
-    initiateConversation();
-});
+   
