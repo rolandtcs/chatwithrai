@@ -7,7 +7,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let userLanguage = "English"; // Default language
 
-    // ✅ FIX: Toggle Language Dropdown (Show/Hide on Click)
+    // ✅ Display initial language in the button
+    changeLangBtn.textContent = userLanguage;
+
+    // ✅ Toggle Language Dropdown (Show/Hide on Click)
     changeLangBtn.addEventListener("click", function () {
         if (languageSelect.style.display === "none" || languageSelect.style.display === "") {
             languageSelect.style.display = "block"; // Show dropdown
@@ -19,6 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // ✅ Change language when user selects from dropdown
     languageSelect.addEventListener("change", function () {
         userLanguage = languageSelect.value;
+        changeLangBtn.textContent = userLanguage; // Update button text
         addMessage("RAI", `Language changed to ${userLanguage}. How may I assist you?`, "ai");
         languageSelect.style.display = "none"; // Hide dropdown after selection
     });
