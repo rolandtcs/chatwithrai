@@ -2,29 +2,29 @@ document.addEventListener("DOMContentLoaded", function () {
     const chatBox = document.getElementById("chat-box");
     const userInput = document.getElementById("user-input");
     const sendButton = document.getElementById("send");
-    const changeLangBtn = document.getElementById("change-lang-btn");
-    const languageSelect = document.getElementById("language-select");
+    const changeLangBtn = document.getElementById("change-lang-btn"); // ✅ Select dropdown
 
     let userLanguage = "English"; // Default language
 
-    // ✅ Display initial language in the button
-    changeLangBtn.textContent = userLanguage;
+    // ✅ Initial message
+    async function initiateConversation() {
+        const initialMessage = "Hello! I'm RAI! How can I assist you today?";
+        addMessage("RAI", initialMessage, "ai");
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
 
-    // ✅ Toggle Language Dropdown (Show/Hide on Click)
-    changeLangBtn.addEventListener("click", function () {
-        if (languageSelect.style.display === "none" || languageSelect.style.display === "") {
-            languageSelect.style.display = "block"; // Show dropdown
-        } else {
-            languageSelect.style.display = "none"; // Hide dropdown
-        }
-    });
+    // ✅ Language confirmation messages
+    const languageConfirmations = {
+        "English": "Language changed to English. How may I assist you?",
+        "Chinese": "语言已更改为中文。我可以如何帮助您？",
+        "Malay": "Bahasa telah ditukar ke Melayu. Bagaimana saya boleh membantu anda?",
+        "Tamil": "மொழி தமிழாக மாற்றப்பட்டது. நான் எப்படி உதவலாம்?"
+    };
 
     // ✅ Change language when user selects from dropdown
-    languageSelect.addEventListener("change", function () {
-        userLanguage = languageSelect.value;
-        changeLangBtn.textContent = userLanguage; // Update button text
-        addMessage("RAI", `Language changed to ${userLanguage}. How may I assist you?`, "ai");
-        languageSelect.style.display = "none"; // Hide dropdown after selection
+    changeLangBtn.addEventListener("change", function () {
+        userLanguage = changeLangBtn.value;
+        addMessage("RAI", languageConfirmations[userLanguage], "ai");
     });
 
     async function sendMessage() {
@@ -94,4 +94,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     sendButton.addEventListener("click", sendMessage);
+
+    initiateConversation(); // ✅ Start chat
 });

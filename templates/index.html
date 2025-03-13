@@ -21,20 +21,18 @@
 
     <!-- Input container -->
     <div class="input-container" id="input-container">
-    <!-- 🌍 Language Selection Button (Shows Current Language) -->
-    <button id="change-lang-btn">English</button>
-
-    <!-- Dropdown for language selection (hidden initially) -->
-    <select id="language-select" style="display: none;">
-        <option value="English">English</option>
-        <option value="Chinese">中文</option>
-        <option value="Malay">Melayu</option>
-        <option value="Tamil">தமிழ்</option>
-    </select>
-
-    <textarea id="user-input" placeholder="Type a message..." rows="1"></textarea>
-    <button id="send">Send</button>
-</div>
+        <!-- ✅ Language Selection Dropdown -->
+        <select id="change-lang-btn" class="language-dropdown">
+            <option value="English" selected>English</option>
+            <option value="Chinese">中文</option>
+            <option value="Malay">Melayu</option>
+            <option value="Tamil">தமிழ்</option>
+        </select>
+    
+        <textarea id="user-input" placeholder="Type a message..." rows="1"></textarea>
+        <button id="send">Send</button>
+    </div>
+    
 </div>
 
 </div>
