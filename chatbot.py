@@ -4,13 +4,11 @@ import os
 # OpenAI API Client
 client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-# ✅ Global variable to store chat history
-conversation_history = []
+# Store conversation history for each user
+user_conversations = {}
 
 # Function to get chatbot response
-def chatbot_response(user_message, user_language="English"):
-    global conversation_history  # Ensure we update the global chat history
-
+def chatbot_response(user_id, user_message, user_language="English"):
     # ✅ Language-specific system instructions
     language_prompts = {
         "English": "You are a helpful AI assistant. Reply in English.",
@@ -32,26 +30,25 @@ def chatbot_response(user_message, user_language="English"):
         "7. Your goal is to make every digital process feel easy and achievable, ensuring users feel supported and empowered."
     )
 
-    # ✅ Add system message only at the start of the conversation
-    if not conversation_history:
-        system_message = {
-            "role": "system",
-            "content": language_prompts.get(user_language, language_prompts["English"]) + "\n\n" + assistant_instructions
-        }
-        conversation_history.append(system_message)
+    # ✅ Combine language instruction with assistant instructions
+    system_message = language_prompts.get(user_language, language_prompts["English"]) + "\n\n" + assistant_instructions
 
+    # ✅ Retrieve or initialize conversation history
+    if user_id not in user_conversations:
+        user_conversations[user_id] = [{"role": "system", "content": system_message}]
+    
     # ✅ Add user message to conversation history
-    conversation_history.append({"role": "user", "content": user_message})
+    user_conversations[user_id].append({"role": "user", "content": user_message})
 
-    # ✅ Send entire conversation history to OpenAI
+    # ✅ Call OpenAI API with conversation history
     response = client.chat.completions.create(
         model="gpt-4",
-        messages=conversation_history
+        messages=user_conversations[user_id]  # Send entire conversation history
     )
 
     bot_reply = response.choices[0].message.content
 
-    # ✅ Add chatbot response to conversation history
-    conversation_history.append({"role": "assistant", "content": bot_reply})
+    # ✅ Store chatbot response in conversation history
+    user_conversations[user_id].append({"role": "assistant", "content": bot_reply})
 
     return bot_reply
