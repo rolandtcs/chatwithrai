@@ -1,15 +1,37 @@
 import openai
 import os
+import time
 
 # OpenAI API Client
 client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # ✅ Global conversation history (shared across all languages)
 conversation_history = []
+last_message_time = time.time()  # ✅ Track last user input time
+
+# Function to check inactivity and reset conversation if needed
+def check_inactivity():
+    global conversation_history, last_message_time
+    current_time = time.time()
+    inactive_duration = current_time - last_message_time  # ✅ Time since last user input
+
+    if inactive_duration > 600:  # ✅ 10 minutes (600 seconds) timeout
+        conversation_history = []  # ✅ Clear history
+        last_message_time = current_time  # ✅ Reset timer
+        return "Your session has been reset due to inactivity. Let's start fresh!"
+    return None
 
 # Function to get chatbot response
 def chatbot_response(user_message, user_language="English"):
-    global conversation_history  # Ensure we use the same history
+    global conversation_history, last_message_time  # Ensure we use the same history
+
+    # ✅ Check if the user was inactive
+    inactivity_message = check_inactivity()
+    if inactivity_message:
+        return inactivity_message  # ✅ Inform user of session reset
+
+    # ✅ Update the last message time
+    last_message_time = time.time()
 
     # ✅ Language-specific system instructions
     language_prompts = {
@@ -51,7 +73,11 @@ def chatbot_response(user_message, user_language="English"):
     # ✅ Debugging: Print the selected language
     print(f"🛠️ Debug: Chatbot responding in {user_language}")
 
-    # ✅ Send entire conversation history to OpenAI (but with updated system language)
+    # ✅ Trim history to the last 50 messages (excluding the system message)
+    if len(conversation_history) > 51:  # System message + 50 messages
+        conversation_history = [conversation_history[0]] + conversation_history[-50:]
+
+    # ✅ Send entire conversation history to OpenAI
     response = client.chat.completions.create(
         model="gpt-4",
         messages=conversation_history
