@@ -2,14 +2,17 @@ document.addEventListener("DOMContentLoaded", function () {
     const chatBox = document.getElementById("chat-box");
     const userInput = document.getElementById("user-input");
     const sendButton = document.getElementById("send");
-    const changeLangBtn = document.getElementById("change-lang-btn"); // ✅ Select dropdown
+    const changeLangBtn = document.getElementById("change-lang-btn");
 
-    let userLanguage = localStorage.getItem("selectedLanguage") || "English"; // ✅ Load stored language
+    // ✅ Load stored language or default to English
+    let userLanguage = localStorage.getItem("selectedLanguage") || "English";
+
+    // ✅ Ensure dropdown reflects stored language on load
+    changeLangBtn.value = userLanguage;
 
     // ✅ Initial message
     async function initiateConversation() {
-        const initialMessage = "Hello! I'm RAI! How can I assist you today?";
-        addMessage("RAI", initialMessage, "ai");
+        addMessage("RAI", "Hello! I'm RAI! How can I assist you today?", "ai");
         chatBox.scrollTop = chatBox.scrollHeight;
     }
 
@@ -21,13 +24,10 @@ document.addEventListener("DOMContentLoaded", function () {
         "Tamil": "மொழி தமிழாக மாற்றப்பட்டது. நான் எப்படி உதவலாம்?"
     };
 
-    // ✅ Ensure dropdown reflects stored language
-    changeLangBtn.value = userLanguage;
-
-    // ✅ Change language and persist in `localStorage`
+    // ✅ Update language selection persistently
     changeLangBtn.addEventListener("change", function () {
         userLanguage = changeLangBtn.value;
-        localStorage.setItem("selectedLanguage", userLanguage); // ✅ Save language persistently
+        localStorage.setItem("selectedLanguage", userLanguage); // ✅ Ensure language change is saved
         addMessage("RAI", languageConfirmations[userLanguage], "ai");
     });
 
@@ -43,14 +43,14 @@ document.addEventListener("DOMContentLoaded", function () {
         const typingBubble = addTypingBubble();
         chatBox.scrollTop = chatBox.scrollHeight;
 
-        // ✅ Always send the latest selected language
+        // ✅ Always fetch the latest selected language
         userLanguage = localStorage.getItem("selectedLanguage") || "English";
 
         try {
             const response = await fetch('/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: userMessage, language: userLanguage }) // ✅ Send language to backend
+                body: JSON.stringify({ message: userMessage, language: userLanguage }) // ✅ Send latest language
             });
 
             const data = await response.json();
