@@ -18,7 +18,10 @@ def chat():
             return jsonify({"reply": "Invalid request. Please send a JSON message with 'message'."}), 400
 
         user_message = data["message"]
+
+        # ✅ Always update the session with the latest selected language
         user_language = data.get("language", "English")  # ✅ Default to English if no language is provided
+        session["user_language"] = user_language  # ✅ Store latest language in session
 
         bot_reply = chatbot_response(user_message, user_language)  # ✅ Pass language to chatbot.py
 

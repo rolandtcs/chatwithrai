@@ -39,11 +39,14 @@ document.addEventListener("DOMContentLoaded", function () {
         const typingBubble = addTypingBubble();
         chatBox.scrollTop = chatBox.scrollHeight;
 
+        // ✅ Always get the latest selected language
+        userLanguage = localStorage.getItem("selectedLanguage") || "English";
+
         try {
             const response = await fetch('/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: userMessage, language: userLanguage })
+                body: JSON.stringify({ message: userMessage, language: userLanguage }) // ✅ Send updated language
             });
 
             const data = await response.json();
