@@ -6,7 +6,7 @@ app = Flask(__name__, static_folder="static", template_folder="templates")
 # ✅ Serve Chatbot UI
 @app.route("/")
 def home():
-    return render_template("index.html")
+    return render_template("index.html")  # ✅ No session, no need to clear anything
 
 # ✅ Chat API
 @app.route("/chat", methods=["POST"])
@@ -18,12 +18,10 @@ def chat():
             return jsonify({"reply": "Invalid request. Please send a JSON message with 'message'."}), 400
 
         user_message = data["message"]
+        user_language = data.get("language", "English")  # ✅ Always use the language sent by frontend
 
-        # ✅ Always update the session with the latest selected language
-        user_language = data.get("language", "English")  # ✅ Default to English if no language is provided
-        session["user_language"] = user_language  # ✅ Store latest language in session
-
-        bot_reply = chatbot_response(user_message, user_language)  # ✅ Pass language to chatbot.py
+        # ✅ Get chatbot response
+        bot_reply = chatbot_response(user_message, user_language)
 
         return jsonify({"reply": bot_reply})
 

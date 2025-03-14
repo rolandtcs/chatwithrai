@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const sendButton = document.getElementById("send");
     const changeLangBtn = document.getElementById("change-lang-btn"); // ✅ Select dropdown
 
-    let userLanguage = "English"; // Default language
+    let userLanguage = localStorage.getItem("selectedLanguage") || "English"; // ✅ Load stored language
 
     // ✅ Initial message
     async function initiateConversation() {
@@ -21,9 +21,13 @@ document.addEventListener("DOMContentLoaded", function () {
         "Tamil": "மொழி தமிழாக மாற்றப்பட்டது. நான் எப்படி உதவலாம்?"
     };
 
-    // ✅ Change language when user selects from dropdown
+    // ✅ Ensure dropdown reflects stored language
+    changeLangBtn.value = userLanguage;
+
+    // ✅ Change language and persist in `localStorage`
     changeLangBtn.addEventListener("change", function () {
         userLanguage = changeLangBtn.value;
+        localStorage.setItem("selectedLanguage", userLanguage); // ✅ Save language persistently
         addMessage("RAI", languageConfirmations[userLanguage], "ai");
     });
 
@@ -39,14 +43,14 @@ document.addEventListener("DOMContentLoaded", function () {
         const typingBubble = addTypingBubble();
         chatBox.scrollTop = chatBox.scrollHeight;
 
-        // ✅ Always get the latest selected language
+        // ✅ Always send the latest selected language
         userLanguage = localStorage.getItem("selectedLanguage") || "English";
 
         try {
             const response = await fetch('/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: userMessage, language: userLanguage }) // ✅ Send updated language
+                body: JSON.stringify({ message: userMessage, language: userLanguage }) // ✅ Send language to backend
             });
 
             const data = await response.json();
