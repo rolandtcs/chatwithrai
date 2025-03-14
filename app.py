@@ -13,14 +13,15 @@ def home():
 def chat():
     try:
         data = request.get_json(force=True, silent=True)
-        
+
         if not data or "message" not in data:
             return jsonify({"reply": "Invalid request. Please send a JSON message with 'message'."}), 400
 
         user_message = data["message"]
         user_language = data.get("language", "English")  # ✅ Always use the latest language sent by frontend
 
-        print(f"🛠️ Debug: Received language from frontend: {user_language}")  # ✅ Debugging log
+        # ✅ Debugging: Print received language
+        print(f"🛠️ Debug: Received language from frontend: {user_language}")
 
         # ✅ Get chatbot response
         bot_reply = chatbot_response(user_message, user_language)

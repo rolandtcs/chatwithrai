@@ -6,9 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // ✅ Load stored language or default to English
     let userLanguage = localStorage.getItem("selectedLanguage") || "English";
-
-    // ✅ Ensure dropdown reflects stored language on load
-    changeLangBtn.value = userLanguage;
+    changeLangBtn.value = userLanguage; // ✅ Ensure dropdown reflects stored language on load
 
     // ✅ Initial message
     async function initiateConversation() {
@@ -24,10 +22,10 @@ document.addEventListener("DOMContentLoaded", function () {
         "Tamil": "மொழி தமிழாக மாற்றப்பட்டது. நான் எப்படி உதவலாம்?"
     };
 
-    // ✅ Update language selection persistently
+    // ✅ Change language and persist in `localStorage`
     changeLangBtn.addEventListener("change", function () {
         userLanguage = changeLangBtn.value;
-        localStorage.setItem("selectedLanguage", userLanguage); // ✅ Ensure language change is saved
+        localStorage.setItem("selectedLanguage", userLanguage); // ✅ Save language persistently
         addMessage("RAI", languageConfirmations[userLanguage], "ai");
     });
 
@@ -45,6 +43,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // ✅ Always fetch the latest selected language
         userLanguage = localStorage.getItem("selectedLanguage") || "English";
+
+        console.log("🛠️ Debug: Sending message in language:", userLanguage);
 
         try {
             const response = await fetch('/chat', {
