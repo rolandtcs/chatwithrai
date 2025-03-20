@@ -105,10 +105,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const messageDiv = document.createElement("div");
         messageDiv.classList.add("message", type);
         messageDiv.innerHTML = `<strong>${sender}:</strong><br>${text}`;
-        
-        // ✅ Convert Markdown to HTML using a Markdown library (e.g., marked.js)
-        messageDiv.innerHTML = marked.parse(text);
-        
         chatBox.appendChild(messageDiv);
         chatBox.scrollTop = chatBox.scrollHeight;
     }
