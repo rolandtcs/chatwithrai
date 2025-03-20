@@ -201,6 +201,38 @@ textarea::placeholder {
 }
 
 
+/* FAQ Button Styling */
+.faq-btn {
+    display: inline-block;
+    padding: 6px 12px;  /* Reduced padding for smaller height */
+    margin: 5px 3px;  /* Less spacing between buttons */
+    font-size: 14px;  /* Smaller text */
+    background-color: #128C7E;  /* WhatsApp Green */
+    color: white;
+    border: none;
+    border-radius: 15px;  /* Keeps rounded corners */
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    text-align: center;
+    white-space: nowrap;  /* Prevents text wrapping */
+}
+
+/* Hover Effect */
+.faq-btn:hover {
+    background-color: #075E54;  /* Darker green on hover */
+}
+
+/* Ensure buttons don't stretch too much */
+.faq-btn-container {
+    display: flex;
+    flex-wrap: wrap;  /* Allows buttons to wrap to new lines */
+    justify-content: center;  /* Centers buttons */
+    gap: 4px;  /* Reduces gap between buttons */
+    max-width: 100%;  /* Prevents excessive width */
+    padding: 5px 0;  /* Less vertical padding */
+}
+
+
 /* Typing Effect */
 .typing-bubble {
     display: inline-block;
