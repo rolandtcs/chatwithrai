@@ -24,12 +24,12 @@ document.addEventListener("DOMContentLoaded", function () {
         ).join("<br>");
 
         const initialMessage = `
-            <p>Hello! I'm RAI! 😊 How can I assist you today?</p>
+            <p>Hello, I'm RAI! 😊 How can I assist you today?</p>
             <br>
             <p>Here are some common things I can help with:</p>
             ${faqButtons}
             <br>
-            <p>Just click a question, and I'll guide you step by step! 😊</p>
+            <p>Just click on a question, or type in your own question, and I'll guide you step by step! 😊</p>
         `;
 
         addMessage("RAI", initialMessage, "ai");

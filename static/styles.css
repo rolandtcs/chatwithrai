@@ -204,13 +204,13 @@ textarea::placeholder {
 /* FAQ Button Styling */
 .faq-btn {
     display: inline-block;
-    padding: 6px 12px;  /* Reduced padding for smaller height */
-    margin: 5px 3px;  /* Less spacing between buttons */
-    font-size: 14px;  /* Smaller text */
+    padding: 4px 10px;  /* Reduced padding for smaller height */
+    margin: 2px;  /* Less spacing between buttons */
+    font-size: 12px;  /* Smaller text */
     background-color: #128C7E;  /* WhatsApp Green */
     color: white;
     border: none;
-    border-radius: 15px;  /* Keeps rounded corners */
+    border-radius: 12px;  /* Keeps rounded corners */
     cursor: pointer;
     transition: background-color 0.2s ease;
     text-align: center;
@@ -227,7 +227,7 @@ textarea::placeholder {
     display: flex;
     flex-wrap: wrap;  /* Allows buttons to wrap to new lines */
     justify-content: center;  /* Centers buttons */
-    gap: 4px;  /* Reduces gap between buttons */
+    gap: 2px;  /* Reduces gap between buttons */
     max-width: 100%;  /* Prevents excessive width */
     padding: 5px 0;  /* Less vertical padding */
 }
