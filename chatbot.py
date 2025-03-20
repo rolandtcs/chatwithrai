@@ -5,12 +5,12 @@ import time
 # OpenAI API Client
 client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-# ✅ Global conversation history (shared across all languages)
-conversation_history = []
-last_message_time = time.time()  # ✅ Track last user input time
+    # ✅ Global conversation history (shared across all languages)
+    conversation_history = []
+    last_message_time = time.time()  # ✅ Track last user input time
 
-# Function to check inactivity and reset conversation if needed
-def check_inactivity():
+    # Function to check inactivity and reset conversation if needed
+    def check_inactivity():
     global conversation_history, last_message_time
     current_time = time.time()
     inactive_duration = current_time - last_message_time  # ✅ Time since last user input
@@ -21,8 +21,8 @@ def check_inactivity():
         return "Your session has been reset due to inactivity. Let's start fresh!"
     return None
 
-# Function to get chatbot response
-def chatbot_response(user_message, user_language="English"):
+    # Function to get chatbot response
+    def chatbot_response(user_message, user_language="English"):
     global conversation_history, last_message_time  # Ensure we use the same history
 
     # ✅ Check if the user was inactive
@@ -92,3 +92,19 @@ def chatbot_response(user_message, user_language="English"):
     conversation_history.append({"role": "assistant", "content": bot_reply})
 
     return bot_reply
+
+    # ✅ Function to format chatbot response for better readability
+    def format_bot_response(response):
+        structured_response = ""
+
+        paragraphs = response.split("\n")
+        for paragraph in paragraphs:
+            paragraph = paragraph.strip()
+            if paragraph.startswith("- ") or paragraph.startswith("• "):
+                structured_response += f"👉 {paragraph[2:]}\n"
+            elif paragraph.startswith("1.") or paragraph.startswith("2.") or paragraph.startswith("3.") or paragraph.startswith("4."):
+                structured_response += f"✅ {paragraph}\n"
+            else:
+                structured_response += f"{paragraph}\n\n"
+
+        return structured_response.strip()
