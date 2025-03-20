@@ -104,20 +104,23 @@ def chatbot_response(user_message, user_language="English"):
 def format_bot_response(response):
     structured_response = ""
     
-    # Split the response by line breaks and handle different types of content
+    # Split the response into separate lines
     paragraphs = response.split("\n")
-    
+
     for paragraph in paragraphs:
         paragraph = paragraph.strip()
 
         if paragraph:  # Only process non-empty lines
-            # Ensure each numbered step is properly formatted
+            # Force clear spacing before numbered steps
             if paragraph[0].isdigit() and paragraph[1] == ".":
-                structured_response += f"\n\n✅ {paragraph}"  # Add spacing before numbered steps
-            # Format bullet points properly
+                structured_response += f"\n\n✅ {paragraph}"  
+            # Force clear spacing before bullet points
             elif paragraph.startswith(("- ", "• ")):
-                structured_response += f"\n👉 {paragraph[2:]}"  # Convert bullet points into readable lists
-            # Regular paragraph formatting
+                structured_response += f"\n👉 {paragraph[2:]}"  
+            # Bold headings that might appear (e.g., "Using Mobile Banking")
+            elif "**" in paragraph:
+                structured_response += f"\n\n📌 {paragraph}"  
+            # Ensure paragraphs are properly spaced
             else:
                 structured_response += f"\n\n{paragraph}"
 
