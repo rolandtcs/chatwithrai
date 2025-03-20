@@ -8,10 +8,40 @@ document.addEventListener("DOMContentLoaded", function () {
     let userLanguage = localStorage.getItem("selectedLanguage") || "English";
     changeLangBtn.value = userLanguage; // ✅ Ensure dropdown reflects stored language on load
 
-    // ✅ Initial message
+    // ✅ List of FAQs
+    const faqList = [
+        { text: "💰 How to make a PayNow transfer?", question: "How to make a PayNow transfer?" },
+        { text: "🚖 How to book a Grab ride?", question: "How to book a Grab ride?" },
+        { text: "🧾 How to pay bills online?", question: "How to pay bills online?" },
+        { text: "🔑 How to access SingPass?", question: "How to access SingPass?" },
+        { text: "🚉 How to top up an EZ-Link card?", question: "How to top up an EZ-Link card?" }
+    ];
+
+    // ✅ Initial message with clickable FAQs
     async function initiateConversation() {
-        addMessage("RAI", "Hello! I'm RAI! How can I assist you today?", "ai");
-        chatBox.scrollTop = chatBox.scrollHeight;
+        let faqButtons = faqList.map(faq => 
+            `<button class="faq-btn" data-question="${faq.question}">${faq.text}</button>`
+        ).join("<br>");
+
+        const initialMessage = `
+            <p>Hello! I'm RAI! 😊 How can I assist you today?</p>
+            <p>Here are some common things I can help with:</p>
+            ${faqButtons}
+            <p>Just click a question, and I'll guide you step by step! 😊</p>
+        `;
+
+        addMessage("RAI", initialMessage, "ai");
+        attachFAQClickHandlers();
+    }
+
+    // ✅ Attach event listeners to FAQ buttons
+    function attachFAQClickHandlers() {
+        document.querySelectorAll(".faq-btn").forEach(button => {
+            button.addEventListener("click", function () {
+                userInput.value = this.dataset.question;
+                sendMessage();
+            });
+        });
     }
 
     // ✅ Language confirmation messages
@@ -29,6 +59,7 @@ document.addEventListener("DOMContentLoaded", function () {
         addMessage("RAI", languageConfirmations[userLanguage], "ai");
     });
 
+    // ✅ Send user message
     async function sendMessage() {
         const userMessage = userInput.value.trim();
         if (!userMessage) return;
@@ -67,14 +98,16 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    // ✅ Function to add messages to chat
     function addMessage(sender, text, type) {
         const messageDiv = document.createElement("div");
         messageDiv.classList.add("message", type);
-        messageDiv.innerHTML = `<strong>${sender}:</strong><br>${text.replace(/\n/g, '<br>')}`;
+        messageDiv.innerHTML = `<strong>${sender}:</strong><br>${text}`;
         chatBox.appendChild(messageDiv);
         chatBox.scrollTop = chatBox.scrollHeight;
     }
 
+    // ✅ Function to add a typing indicator
     function addTypingBubble() {
         const typingDiv = document.createElement("div");
         typingDiv.classList.add("message", "typing-bubble");
@@ -87,12 +120,14 @@ document.addEventListener("DOMContentLoaded", function () {
         return typingDiv;
     }
 
+    // ✅ Function to remove typing indicator
     function removeTypingBubble(typingDiv) {
         if (typingDiv && typingDiv.parentNode) {
             typingDiv.parentNode.removeChild(typingDiv);
         }
     }
 
+    // ✅ Handle Enter key for sending messages
     userInput.addEventListener("keydown", function (event) {
         if (event.key === "Enter") {
             event.preventDefault();
