@@ -99,19 +99,3 @@ def chatbot_response(user_message, user_language="English"):
     conversation_history.append({"role": "assistant", "content": bot_reply})
 
     return bot_reply
-
-# ✅ Function to format chatbot response for better readability
-def format_bot_response(response):
-    structured_response = ""
-
-    paragraphs = response.split(" ")
-    for paragraph in paragraphs:
-        paragraph = paragraph.strip()
-        if paragraph.startswith("1.") or paragraph.startswith("2.") or paragraph.startswith("3.") or paragraph.startswith("4.") or paragraph.startswith("5.") or paragraph.startswith("6.") or paragraph.startswith("7.") or paragraph.startswith("8.") or paragraph.startswith("9.") or paragraph.startswith("10."):
-            structured_response += f"\n\n✅ {paragraph}"  # Add spacing before numbered steps
-        elif paragraph.startswith("- ") or paragraph.startswith("• "):
-            structured_response += f"\n👉 {paragraph[2:]}"  # Convert bullet points into a proper list
-        elif paragraph:
-            structured_response += f"\n\n{paragraph}"  # Keep normal paragraphs spaced apart
-
-    return structured_response.strip()
