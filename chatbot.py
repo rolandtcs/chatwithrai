@@ -60,7 +60,7 @@ def chatbot_response(user_message, user_language="English"):
         "- Use clear paragraphing** instead of one long block of text."
         "- When listing instructions, use numbered steps (1, 2, 3...)."
         "- Use bullet points for additional details or tips** to improve readability."
-        "- Bold important UI elements** (e.g., "Book Now" button) to help users navigate digital interfaces easily."
+        "- Bold important UI elements (e.g., Book Now button) to help users navigate digital interfaces easily."
 
         "Your goal is to make every digital process feel easy, stress-free, and achievable so that users feel supported and empowered."
     )
